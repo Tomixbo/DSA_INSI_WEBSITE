@@ -31,6 +31,7 @@ The project is a website made with Django. The objective of the website is the m
 ### Administration page :
 Go to the next url for database administration :
 >> 127.0.0.1/admin
+</br>
 Super-user : 
 - username : admin
 - password : mysecret
