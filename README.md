@@ -15,10 +15,15 @@ The project is a website made with Django. The objective of the website is the m
 - Making contest
 
 ## Deployment :
-- create virtual environment with python 3.10.0 >> python3.10 -m venv .venv
-- activate the virtual environment >> .venv\Scripts\activate
-- install all requirements in : requirements.txt >> pip install --yes -r requirements.txt
-- launch the django website >> python manage.py runserver 127.0.0.1:8001
+- create virtual environment with python 3.10.0
+>> python3.10 -m venv .venv
+- activate the virtual environment
+>> .venv\Scripts\activate
+- install all requirements in : requirements.txt
+>> pip install --yes -r requirements.txt
+- launch the django website
+>> cd local_contest
+>> python manage.py runserver 127.0.0.1:8001
 - open the url 127.0.0.1:8001 in a browser
 - to access the website with another device in the same LAN : ip-address-of-pc-server:8001 (ex : 192.168.88.125:8001) </br>
 *Note : use the cmd command : "ipconfig -all" to see the ip-address
