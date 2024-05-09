@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-from .models import DefinedFile, Challenge, Level
+from .models import DefinedFile, Challenge, Level, Performance
+
+from django.contrib.auth.decorators import login_required
+from .utils import calculate_rank, calculate_score, update_ranks, update_score
+
 
 def fetch_defined_files(request, challenge_slug):
     if request.method == 'GET':
@@ -15,9 +19,14 @@ def fetch_defined_files(request, challenge_slug):
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
+@login_required
 def challenge_detail(request, challenge_slug=None):
+    update_ranks()
+    user = request.user  # Obtenez l'utilisateur actuel
+    rank, total_user = calculate_rank(user)
     if challenge_slug:
         defined_files = DefinedFile.objects.filter(level__challenge__slug=challenge_slug)
+        test_results = {defined_file.id : defined_file.get_test_result_for_user(request) for defined_file in defined_files}
         challenge = get_object_or_404(Challenge, slug=challenge_slug)
         levels = Level.objects.filter(challenge=challenge)
         result = 'Upload your file first'
@@ -35,7 +44,13 @@ def challenge_detail(request, challenge_slug=None):
                         defined_content = defined_file.output_file.read().decode('utf-8')
 
                         if uploaded_content == defined_content:
+                            performance = Performance.objects.create(user=user, definedfile=defined_file, solved=True)
                             result = 'VALID'
+                            # print("Your score : ",calculate_score(user))
+                            rank, total_user = calculate_rank(user)
+                            # print("Your rank : ", rank, " sur ", total_user)
+                            update_score(user)
+                            update_ranks()
                         else:
                             result = 'INVALID'
 
@@ -50,13 +65,24 @@ def challenge_detail(request, challenge_slug=None):
                 result = 'INVALID (No file uploaded)'
             return JsonResponse({'result': result})
 
-        return render(request, 'challenge_detail.html', {'defined_files': defined_files, 'challenge': challenge, 'levels': levels})
+        return render(request, 'challenge_detail.html', {'defined_files': defined_files, 'challenge': challenge, 'levels': levels, 'user': user, 'test_results': test_results, 'total_user': total_user})
 
     # Handle case when challenge name is not provided
     else:
         # Add logic here if needed
-        return render(request, 'challenge_list.html', {'challenges': Challenge.objects.all()})
+        return render(request, 'challenge_list.html', {'challenges': Challenge.objects.all(), 'user': user, 'total_user': total_user})
 
+@login_required
 def challenge_list(request):
+    update_ranks()
+    user = request.user
     challenges = Challenge.objects.filter(published=True)
-    return render(request, 'challenge_list.html', {'challenges': challenges})
+    rank, total_user = calculate_rank(user)
+    return render(request, 'challenge_list.html', {'challenges': challenges, 'total_user': total_user})
+
+
+def get_user_rank(request, challenge_slug):
+    user = request.user
+    rank, total_user = calculate_rank(user)
+    score = calculate_score(user)
+    return JsonResponse({'rank': rank, 'total_user': total_user, 'score': score})

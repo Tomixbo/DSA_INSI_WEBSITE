@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 import os
+from members.models import CustomUser
+from django.utils import timezone
 
 class Challenge(models.Model):
     CATEGORY_CHOICES = [
@@ -73,3 +75,34 @@ class DefinedFile(models.Model):
     
     def filename(self):
         return os.path.basename(self.input_file.name)
+    
+    def get_test_result(self, user):
+        try:
+            performance = Performance.objects.get(user=user, definedfile=self)
+            return "VALID" if performance.solved else "?"
+        except Performance.DoesNotExist:
+            return "?"
+    
+    def get_test_result_for_user(self, request):
+        return self.get_test_result(request.user)
+
+    
+class Performance(models.Model):
+    
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    definedfile = models.ForeignKey(DefinedFile, on_delete=models.CASCADE)
+    solved = models.BooleanField(default=False)
+    description = models.CharField(max_length=150)
+    created_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        # Si la performance n'a pas de description, créez-la à partir du nom d'utilisateur et de la date de création
+        if not self.created_at:  # If the object is being created for the first time
+            self.created_at = timezone.now()  # Set the creation timestamp
+        if not self.description:
+            self.description = f"{self.user.username}_{self.created_at.strftime('%Y-%m-%d_%H-%M-%S')}"
+        
+        super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ['user', 'definedfile']

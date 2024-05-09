@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DefinedFile, Challenge, Level
+from .models import DefinedFile, Challenge, Level, Performance
 from .forms import DefinedFileAdminForm
 
 
@@ -29,6 +29,12 @@ class DefinedFileAdmin(admin.ModelAdmin):
     level_name.short_description = 'Level Name'
     challenge_name.short_description = 'Challenge Name'
 
+class PerformanceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'definedfile', 'solved', 'description', 'created_at')
+    list_filter = ('user', 'definedfile__level__challenge', 'definedfile__level', 'definedfile')
+    search_fields = ('user__username', 'definedfile__name', 'description')
+
 admin.site.register(Challenge, ChallengeAdmin)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(DefinedFile, DefinedFileAdmin)
+admin.site.register(Performance, PerformanceAdmin)

@@ -1,24 +1,24 @@
+{% extends "base.html" %}
 {% load static %}
 {% load django_template_maths %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'css/stars.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <title>Challenge List</title>
-</head>
-<body class="bg-light">
-    <a style="display: block;" class="p-1 px-3 bg-dark text-white">Hello DSA member</a>
+{% block content %}
 
-    <img src="{% static 'img/banner.jpg' %}" class=".bg-image" style="width:100%;" alt="DSA_image" >
-
-
-    <div class="container-fluid  p-3 px-4 bg-dark text-white">
+    <div class="shadow container-fluid  p-3 px-4 text-white" style="background-color: #051934;">
         <h2>Challenge List</h2>
     </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <br/>
+            <div class="container-fluid px-3">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+             </div>
+            
+        {% endfor %}
+    {% endif %}
     <div class="card m-3 p-3">
         <table class="table table-hover">
             <thead>
@@ -106,5 +106,4 @@
             });
         });
     </script>
-</body>
-</html>
+{% endblock content %}

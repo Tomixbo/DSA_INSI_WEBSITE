@@ -19,9 +19,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('challenges.urls')),
+    path('members/', include('django.contrib.auth.urls')),
+    path('members/', include('members.urls')),
 ] 
 
 # Add URL patterns for serving media files during development.
