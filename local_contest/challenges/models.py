@@ -14,6 +14,7 @@ class Challenge(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    author = models.CharField(max_length=100, blank = True)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Alpha')
     difficulty = models.IntegerField(default=1, choices=[(i, i) for i in range(1, 6)])  # Level field with choices 1 to 5
     published = models.BooleanField(default=False)

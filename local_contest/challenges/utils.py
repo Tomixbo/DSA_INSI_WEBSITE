@@ -1,4 +1,9 @@
 from .models import CustomUser, Performance
+from django.utils import timezone
+
+BETA_SCORE_PASS = 30
+GAMMA_SCORE_PASS = 100
+OMEGA_SCORE_PASS = 200
 
 def calculate_score(user):
 
@@ -16,6 +21,17 @@ def calculate_score(user):
 
         return total_score
 
+def get_time_last_perf(user):
+     # Récente performance
+    latest_performance = user.performance_set.order_by('-created_at').first()
+    if latest_performance:
+        latest_performance_date = latest_performance.created_at.timestamp()
+    else:
+        latest_performance_date = 0
+    
+    return latest_performance_date
+
+
 def calculate_rank(user):
     user_score = user.score
     total_user = CustomUser.objects.all().count()
@@ -23,7 +39,25 @@ def calculate_rank(user):
     same_scores = CustomUser.objects.filter(score=user_score).count()
     # print("Higher_scores than you :", higher_scores)
     # print("Same_scores as you, you included : ", same_scores)
-    rank = higher_scores + same_scores 
+    
+    my_last_perf_time = get_time_last_perf(user)
+    my_join_date = user.date_joined.timestamp()
+    
+    # print(latest_performance_date)
+
+    # Count user before you
+    same_before_you = 0 
+    if my_last_perf_time!=0:
+        for customuser in CustomUser.objects.filter(score=user_score):
+            if my_last_perf_time > get_time_last_perf(customuser):
+                same_before_you += 1
+    else:
+        for customuser in CustomUser.objects.filter(score=user_score):
+            if my_join_date > customuser.date_joined.timestamp():
+                same_before_you += 1
+    
+
+    rank = higher_scores + same_before_you + 1 
     if rank == 0:
          rank = CustomUser.objects.all().count()
     return (rank, total_user)
@@ -37,3 +71,16 @@ def update_ranks():
 def update_score(user):
     user.score = calculate_score(user)
     user.save(update_fields=['score'])
+    update_category(user)
+
+def update_category(user):
+    if user.category == "Alpha":
+        if user.score >= BETA_SCORE_PASS:
+            user.category = "Beta"
+    elif user.category == "Beta":
+        if user.score >= GAMMA_SCORE_PASS:
+            user.category = "Gamma"
+    elif user.category == "Gamma":
+        if user.score >= OMEGA_SCORE_PASS:
+            user.category = "Omega"
+    user.save(update_fields=['category'])

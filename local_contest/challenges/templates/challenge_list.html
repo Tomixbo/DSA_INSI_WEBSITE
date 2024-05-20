@@ -24,8 +24,9 @@
             <thead>
               <tr>
                 <th>Challenge name</th>
-                <th>Category</th>
-                <th>Difficulty</th>
+                <th class="text-center">Category</th>
+                <th class="text-center">Difficulty</th>
+                <th class="col-2 text-center">Your progress</th>
               </tr>
             </thead>
             <tbody>
@@ -34,12 +35,13 @@
                          <tr>
                             <td><a href="{% url 'challenge_detail' challenge_slug=challenge.slug %}" class="list-group-item level-link">{{ challenge.name }}</a></td>
                             <!-- <td>{{ challenge.name }}</td> -->
-                            <td>{{ challenge.category }}</td>
-                            <td>
+                            <td class="text-center">{{ challenge.category }}</td>
+                            <td class="text-center">
                                 <figure class="notation-s my-1">
                                     <span role="img" aria-labelledby="rating-6636663adb9b6" style="width: {{ challenge.difficulty|mul:20 }}%"></span>
                                 </figure>
                             </td>
+                            <td class="text-center">{{ challenge.num_resolved_defined_files }}/{{ challenge.num_defined_files }}</td>
                         </tr>
                      {% endif %}
                 {% endfor %}
@@ -49,61 +51,6 @@
     </div>
     
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-
-        $(document).ready(function () {
-
-            // Function to compare files
-            function compareFiles(challengeName, definedFileName, uploadedFile, resultSpan) {
-                var formData = new FormData();
-                formData.append('challenge_name', challengeName);
-                formData.append('defined_file_name', definedFileName);
-                formData.append('uploaded_file', uploadedFile);
-
-                // Get CSRF token from the cookie
-                var csrftoken = getCookie('csrftoken');
-
-                $.ajax({
-                    url: '',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    },
-                    success: function (data) {
-                        $(resultSpan).text(data.result);
-                    }
-                });
-            }
-
-            // Function to get CSRF token from cookies
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            // Click event handler for compare buttons
-            $('.compareBtn').on('click', function () {
-                var challengeName = $(this).data('challenge-name');
-                var definedFileName = $(this).data('defined-file-name');
-                var uploadedFile = $(this).prev('.fileInput')[0].files[0];
-                var resultSpan = $(this).next('.result');
-                compareFiles(challengeName, definedFileName, uploadedFile, resultSpan);
-            });
-        });
-    </script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    
 {% endblock content %}

@@ -25,12 +25,10 @@ MEDIA_URL = '/media/'
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-dtqn+*_4&_qb8j(rt6n^90jb6jjgnwg)ueuc)i*!adrtp=inc#"
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG')
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -81,13 +79,23 @@ WSGI_APPLICATION = "local_contest.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "test_db",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "db",
+        "PORT": "5432"
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -123,6 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = "/static/"
 STATIC_URL = "/static/"
 
 # Default primary key field type
@@ -133,3 +142,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "/members/login_user"
 
 AUTH_USER_MODEL = 'members.CustomUser'
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'https://*']
+
+# EMAIL_BACKEND
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Set the default email address to use as the sender
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')  # Enter your Gmail email address

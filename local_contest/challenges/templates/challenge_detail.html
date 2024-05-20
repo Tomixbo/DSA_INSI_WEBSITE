@@ -16,7 +16,7 @@
 
 
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
     <script>
         $(document).ready(function () {
             // Reset file input fields on page load
@@ -65,8 +65,9 @@
                         url: '/{ challenge.slug }/get_user_rank/', // URL de votre vue pour récupérer le rang de l'utilisateur
                         type: 'GET',
                         success: function(data) {
-                            $('#user-rank').text('Your rank : ' + data.rank + '/' + data.total_user);
+                            $('#user-rank').html('Your rank : '+data.rank+'/'+data.total_user+' <i class="bi-info-circle ms-1"></i>');
                             $('#user-score').text('Your score : ' + data.score);
+                            $('#user-category').html('Your category : <span class="ms-1 fw-bold">'+data.category+'</span>');
                         },
                         error: function(xhr, status, error) {
                             console.error('Error fetching user rank:', error);
@@ -198,7 +199,7 @@
                                     <h5>{{ level.name }} description</h5>
                                     {% if level.description_file %}
                                         <a href="{{ level.description_file.url }}" download>
-                                            <button type="button" class="btn btn-outline-dark">Download Description File</button>
+                                            <button type="button" class="btn btn-outline-dark"><i class="bi-file-pdf me-1"></i> Download Description File </button>
                                         </a>
                                     {% else %}
                                         <p>No description file available.</p>
@@ -208,7 +209,7 @@
                                     <h5>Input files</h5> 
                                     {% if level.input_file %}
                                         <a href="{{ level.input_file.url }}" download>
-                                            <button type="button" class="btn btn-outline-dark">Download Input Files</button>
+                                            <button type="button" class="btn btn-outline-dark"><i class="bi-file-zip me-1"></i>Download Input Files</button>
                                         </a>
                                     {% else %}
                                         <p>No input file available.</p>
@@ -234,13 +235,13 @@
                         <!-- Render defined files for the selected level -->
                         {% for level in levels %}
                             <div class="defined-files-container list-group " data-level-id="{{ level.id }}" style="display: none;">
-                                {% for defined_file in level.defined_files.all %}
+                                {% for defined_file in level.defined_files.all|dictsort:"name" %}
                                     <div class="defined-file list-group-item">
                                         <div class="row">
                                             <div class="col-lg-2 col-md-3 col-4">
                                                 {% if defined_file.input_file %}
                                                     <a href="{{ defined_file.input_file.url }}" download type="button" class="btn btn-outline-dark">
-                                                        {{ defined_file.filename }}
+                                                        <i class="bi-file-text me-1"></i>{{ defined_file.filename }}
                                                     </a>
                                                 {% else %}
                                                     <p>No input file available.</p>

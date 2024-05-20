@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=test_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+  django_gunicorn:
+    volumes:
+      - ./local_contest:/app
+      - static:/static
+    env_file:
+      - .env
+    build: 
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  nginx:
+    image: nginx:1.19.0-alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+  
+  
+volumes:
+  static:

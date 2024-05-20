@@ -23,10 +23,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('challenges.urls')),
-    path('members/', include('django.contrib.auth.urls')),
+
     path('members/', include('members.urls')),
 ] 
-
+#path('members/', include('django.contrib.auth.urls')),
 # Add URL patterns for serving media files during development.
 # This is necessary to ensure that uploaded files are accessible via the MEDIA_URL.
 if settings.DEBUG:

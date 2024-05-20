@@ -4,8 +4,8 @@ from .forms import DefinedFileAdminForm
 
 
 class ChallengeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'published')
-    list_filter = ('published',)
+    list_display = ('name', 'author', 'published')
+    list_filter = ('published','author')
 
 class LevelAdmin(admin.ModelAdmin):
     list_display = ('name', 'challenge_name')
