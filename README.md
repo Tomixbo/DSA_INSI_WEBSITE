@@ -12,6 +12,7 @@ The project is a website made with Django. The objective of the website is the m
 
 ## Future implementations :
 - Learning resources page
+- Staff page : for adding/managing learning resources, challenges
 - Making contest
 
 ## Deployment :
