@@ -11,6 +11,7 @@ The project is a website made with Django. The objective of the website is the m
 - User performance monitoring : score, rank, category
 
 ## Future implementations :
+- Learning resources page
 - Making contest
 
 ## Deployment :
