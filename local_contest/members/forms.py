@@ -35,6 +35,13 @@ class RegisterUserForm(UserCreationForm):
             bf = self[name]
             output.append(f'<p>{bf.label_tag()}{bf}</p>')
         return '\n'.join(output)
+
+    def save(self, commit=True):
+        user = super(RegisterUserForm, self).save(commit=False)
+        user.username = user.username.lower()
+        if commit:
+            user.save()
+        return user
     
 
 class CustomPasswordChangeForm(PasswordChangeForm):

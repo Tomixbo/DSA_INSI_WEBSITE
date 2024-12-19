@@ -1,9 +1,9 @@
 from .models import CustomUser, Performance
 from django.utils import timezone
 
-BETA_SCORE_PASS = 30
-GAMMA_SCORE_PASS = 100
-OMEGA_SCORE_PASS = 200
+BETA_SCORE_PASS = 50
+GAMMA_SCORE_PASS = 200
+OMEGA_SCORE_PASS = 300
 
 def calculate_score(user):
 

@@ -149,10 +149,10 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost', 'https://*']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = "pythontomixbo@gmail.com"
+EMAIL_HOST_PASSWORD = "bsvk ejss yntu nekj"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Set the default email address to use as the sender
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')  # Enter your Gmail email address
+DEFAULT_FROM_EMAIL = "pythontomixbo@gmail.com"  # Enter your Gmail email address
